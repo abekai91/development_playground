@@ -13,6 +13,7 @@ Class Filling_Individual
 '----------------------------------------------------------------------------------------------------
 	
     Public Default Function Init(parameters)
+	On Error Resume Next
          Select Case UBound(parameters)
              Case 5
              	Set Init = InitFiveParam(parameters(0), parameters(1), parameters(2), parameters(3), parameters(4),parameters(5))
@@ -21,12 +22,17 @@ Class Filling_Individual
              Case Else
                 Set Init = Me
          End Select
+	
+	If Err.Number <> 0 Then
+		    Call GF_LogError("Error", "Filling.bmo - Function Init is not Workings [" & Err.Description & "]","Individual")
+		    Err.Clear
+	End If
     End Function
  
 'Description : Function InitFiveParam [to assign parameter value into variable]
 '---------------------------------------------------------------------------------------------------- 
     Private Function InitFiveParam(parameter1, parameter2, parameter3, parameter4, parameter5,parameter6)
-    	 
+    On Error Resume Next	 
     	rack_name 		 = parameter1
         rack_no 		 = parameter2
         prod_detail		 = parameter3
@@ -37,10 +43,14 @@ Class Filling_Individual
         Call product_filter
         
         Set InitFiveParam = Me
+	If Err.Number <> 0 Then
+		    Call GF_LogError("Error", "Filling.bmo - Function InitFiveParam is not Workings [" & Err.Description & "]","Individual")
+		    Err.Clear
+	End If
     End Function
 	
 	Private Function InitSixParam(parameter1, parameter2, parameter3, parameter4, parameter5,parameter6,parameter7)
-    	 
+    On Error Resume Next	 
     	rack_name 		 = parameter1
         rack_no 		 = parameter2
         prod_detail		 = parameter3
@@ -51,13 +61,17 @@ Class Filling_Individual
 		
         Call product_filter
         
-        Set InitFiveParam = Me
+        Set InitSixParam = Me
+	If Err.Number <> 0 Then
+		    Call GF_LogError("Error", "Filling.bmo - Class InitSixParam is not Workings [" & Err.Description & "]","Individual")
+		    Err.Clear
+	End If
     End Function
 
 'Description : Function product_filter [to filter the product name before sent to enertech plc]
 '---------------------------------------------------------------------------------------------------- 	
 	Public Function product_filter()
-		
+	On Error Resume Next	
 		Dim re : Set re = New RegExp
 		re.Global = True
 		re.Pattern = "[a-zA-Z_]"
@@ -104,13 +118,16 @@ Class Filling_Individual
 				End If	
 			Next
 		Next
-
+	If Err.Number <> 0 Then
+		    Call GF_LogError("Error", "Filling.bmo - Function product_filter is not Workings [" & Err.Description & "]","Individual")
+		    Err.Clear
+	End If
 	End Function
 
 'Description : Function Filling_Idividual_Tag [to assign internal/plc tag ]
 '---------------------------------------------------------------------------------------------------- 	
 	Private Function Filling_Idividual_Tag(Byval index, Byval DB_name) 
-
+	On Error Resume Next
 		If DB_name = "DB360_Order_Status" Then	'Datablock 360 / Datablock 330
 				Dim DB360_Order_Status
 					DB360_Order_Status 		= Array("RESERVED SPACE" , _
@@ -341,6 +358,10 @@ Class Filling_Individual
 					
 	'developement in progress	
 		End If
+	If Err.Number <> 0 Then
+		    Call GF_LogError("Error", "Filling.bmo - Function Filling_Idividual_Tag is not Workings [" & Err.Description & "]","Individual")
+		    Err.Clear
+	End If
 	End Function
 	
 'Description : Let Property for Analysis [to set the value property of objects]
@@ -447,6 +468,7 @@ Dim Tags
 'Description : Function Sent the oms value into Enertech PLC [Action Script Phase 1] 
 '---------------------------------------------------------------------------------------------------- 
 	Public Function SentValue_Medical_Plc()
+	On Error Resume Next
 			order_status = 1
 			recipe_code = prod_recipe(0)
 			cyl_code = prod_cyl(0)
@@ -456,12 +478,17 @@ Dim Tags
 			Call GF_LogToFile_("Exec", "Sent Into EnerTech PLC ","Individual")
 			Call GF_LogToFile_("Exec", "Set Status = 1 ","Individual")
 			Call GF_LogToFile_("Exec", "[ Recipe = " & prod_recipe(0) & ", Cylinder = " & prod_cyl(0) & ", Product = " & prod_qty(0) & ", isPrefilled = " & isPrefilled & "]" ,"Individual")
-
+	
+	If Err.Number <> 0 Then
+		    Call GF_LogError("Error", "Filling.bmo - Function SentValue_Medical_Plc is not Workings [" & Err.Description & "]","Individual")
+		    Err.Clear
+	End If
 	End Function
 	
 'Description : Function Sent the oms value into Cryostar PLC [Action Script Phase 1] 
 '---------------------------------------------------------------------------------------------------- 
 	Public Function SentValue_Industry_Plc()
+	On Error Resume Next
 			order_status = 1
 			recipe_code = prod_recipe(0)
 			cyl_code = prod_cyl(0)
@@ -470,12 +497,16 @@ Dim Tags
 			Call GF_LogToFile_("Execute", "Sent Into Cryostar PLC ","Individual")
 			Call GF_LogToFile_("Execute", "Set Status = 1 ","Individual")
 			Call GF_LogToFile_("Execute", "[ Recipe = " & prod_recipe(0) & ", Cylinder = " & prod_cyl(0) & " , Quantity = " & prod_qty(0) & "]" ,"Individual")
-
+	If Err.Number <> 0 Then
+		    Call GF_LogError("Error", "Filling.bmo - Function SentValue_Industry_Plc is not Workings [" & Err.Description & "]","Individual")
+		    Err.Clear
+	End If
 	End Function
 
 'Description : Function to check the QI/Full Status [Action Script Phase 3] 
 '---------------------------------------------------------------------------------------------------- 	
 	Public Function analysis_required()
+	On Error Resume Next
 		If prod_recipe(0) = 211 Then
 			If isPrefilled = 0 Then
 				Individual_QI_State = 1
@@ -485,94 +516,148 @@ Dim Tags
 		Else
 			Individual_QI_State = 2
 		End If
-		
+	If Err.Number <> 0 Then
+		    Call GF_LogError("Error", "Filling.bmo - Function analysis_required is not Workings [" & Err.Description & "]","Individual")
+		    Err.Clear
+	End If	
 	End Function
 	
 'Description : Function Deactivate Check Point 1 [Action Script Phase 1]
 '---------------------------------------------------------------------------------------------------- 
 	Public Function Deactivate_CheckingPoint_1()
+	On Error Resume Next
 			order_status = 0
 			Call Mysql_Non_Query("Update codabix_trigger Set db_360 = 0 , db_361 =1 , db_362 = 0 Where state = 1 and rack_id = "& dbRack_No & "")
 			
 			Call GF_LogToFile_("Execute", "Set Status = 0 ", "Individual")
 			Call GF_LogToFile_("Execute", "EnerTech Deactivate CP 1 : " & dbRack_No , "Individual")
+	If Err.Number <> 0 Then
+		    Call GF_LogError("Error", "Filling.bmo - Function Deactivate_CheckingPoint_1 is not Workings [" & Err.Description & "]","Individual")
+		    Err.Clear
+	End If
 	End Function
 	
 'Description : Function Deactivate Check Point 1 [Action Script Phase 1]
 '---------------------------------------------------------------------------------------------------- 
 	Public Function Deactivate_Cryostar_CheckingPoint_1()
+	On Error Resume Next
 			order_status = 0
 			Call Mysql_Non_Query("Update codabix_trigger Set db_330 = 0 , db_331 =1  Where state = 1 and rack_id = "& dbRack_No & "")
 	
 			Call GF_LogToFile_("Execute", "Set Status = 0 ", "Individual")
 			Call GF_LogToFile_("Execute", "Cryostar Deactivate CP 1 : " & dbRack_No , "Individual")
+	If Err.Number <> 0 Then
+		    Call GF_LogError("Error", "Filling.bmo - Function Deactivate_Cryostar_CheckingPoint_1 is not Workings [" & Err.Description & "]","Individual")
+		    Err.Clear
+	End If
 	End Function
 
 'Description : Function Deactivate Check Point 2 [Action Script Phase 2]
 '---------------------------------------------------------------------------------------------------- 
 	Public Function Deactivate_CheckingPoint_2()
+	On Error Resume Next
 			order_status = 0
 			Call Mysql_Non_Query("Update codabix_trigger Set db_360 = 0 , db_361 = 0 , db_362 = 1 Where state = 1 and rack_id = "& dbRack_No & "")
 			Call GF_LogToFile_("Execute", "EnerTech Deactivate CP 2 : " & dbRack_No , "Individual")
+	If Err.Number <> 0 Then
+		    Call GF_LogError("Error", "Filling.bmo - Function Deactivate_CheckingPoint_2 is not Workings [" & Err.Description & "]","Individual")
+		    Err.Clear
+	End If
 	End Function
 	
 'Description : Function Deactivate Check Point 2 [Action Script Phase 2]
 '---------------------------------------------------------------------------------------------------- 
 	Public Function Deactivate_Cryostar_CheckingPoint_2()
+	On Error Resume Next
 			order_status = 0
 			Call Mysql_Non_Query("Update codabix_trigger Set db_330 = 0 , db_331 = 0  Where state = 1 and rack_id = "& dbRack_No & "")
+			Call Mysql_Non_Query("UPDATE analysis_filling_history SET status = 2 WHERE oms_batch = (SELECT distinct oms_batch from codabix_trigger WHERE rack_id = "& dbRack_No & ") and " & _ 
+							     " rack_name = '"& rack_name &"' ")
 			Call Deactivate_Cryostar_All()
+			
+	If Err.Number <> 0 Then
+		    Call GF_LogError("Error", "Filling.bmo - Function Deactivate_Cryostar_CheckingPoint_2 is not Workings [" & Err.Description & "]","Individual")
+		    Err.Clear
+	End If
 	End Function
 	
 'Description : Function Reset Filling(12) EnerTech
 '----------------------------------------------------------------------------------------------------  
 	Public Function Reset_FillIndividual_EnerTech
+	On Error Resume Next
+		Call Mysql_Non_Query("UPDATE analysis_filling_history SET status = 3 WHERE oms_batch = (SELECT distinct oms_batch from codabix_trigger WHERE rack_id = "& dbRack_No & ") and " & _ 
+							" rack_name = '"& rack_name &"' ")
 		Call Mysql_Non_Query("Update codabix_trigger Set db_360 = 0 , db_361 = 0 , db_362 = 0  , state = 0 , cylinder_id = 0 , oms_batch = '' , shift_batch = '' , user_id = 0 , prod_detail = '' , IsPrefilled = 0 Where state = 1 and rack_id = "& dbRack_No & "")
 		Call Mysql_Non_Query("Update filling_rack Set occupied = 0 , cylinder_type = '' , user_id = ''  Where rack_id="& dbRack_No & "")
 		Call GF_LogToFile_("RESET", " Filling EnerTech : " & dbRack_No , "Individual")
+	If Err.Number <> 0 Then
+		    Call GF_LogError("Error", "Filling.bmo - Function Reset_FillIndividual_EnerTech is not Workings [" & Err.Description & "]","Individual")
+		    Err.Clear
+	End If
 	End Function
 	
 'Description : Function Reset Filling(12) EnerTech
 '----------------------------------------------------------------------------------------------------  
 	Public Function Reset_FillIndividual_Cryostar
+	On Error Resume Next	
+		Call Mysql_Non_Query("UPDATE analysis_filling_history SET status = 3 WHERE oms_batch = (SELECT distinct oms_batch from codabix_trigger WHERE rack_id = "& dbRack_No & ") and " & _ 
+							" rack_name = '"& rack_name &"' ")
 		Call Mysql_Non_Query("Update codabix_trigger Set db_330 = 0 , db_331 = 0  , state = 0 , cylinder_id = 0 , oms_batch = '' , shift_batch = '' ,user_id = 0 , prod_detail = '' , IsPrefilled = 0 Where state = 1 and rack_id = "& dbRack_No & "")
 		Call Mysql_Non_Query("Update filling_rack Set occupied = 0 , cylinder_type = '' , user_id = ''  Where rack_id="& dbRack_No & "")
 		
 		Call GF_LogToFile_("RESET", " Filling Cryostar : " & dbRack_No , "Individual")
+	If Err.Number <> 0 Then
+		    Call GF_LogError("Error", "Filling.bmo - Function Reset_FillIndividual_Cryostar is not Workings [" & Err.Description & "]","Individual")
+		    Err.Clear
+	End If
 	End Function
 	
 'Description : Function Deactivate Check Point 3 [Action Script Phase 3]
 '---------------------------------------------------------------------------------------------------- 	
 	Public Function Deactivate_CheckingPoint_3()
-	
+	On Error Resume Next
 			Call Mysql_Non_Query("Update codabix_trigger Set db_360 = 0 , db_361 = 0 , db_362 = 0 Where state = 1 and rack_id = "& dbRack_No & "")
 			Call StoreToDB()
 			Call Deactivate_All()
 			Call GF_LogToFile_("Execute", " Deactivate CP 3 : " & dbRack_No , "Individual")
+	If Err.Number <> 0 Then
+		    Call GF_LogError("Error", "Filling.bmo - Function Deactivate_CheckingPoint_3 is not Workings [" & Err.Description & "]","Individual")
+		    Err.Clear
+	End If
 	End Function
 	
 'Description : Function Deactivate Check Point 3 [Action Script Phase 3]
 '---------------------------------------------------------------------------------------------------- 	
 	Public Function Deactivate_All()
-			Call Mysql_Non_Query("Update codabix_trigger Set db_360 = 0 , db_361 = 0 , db_362 = 0  , state = 0 , cylinder_id = 0 , oms_batch = '' , shift_batch = '' ,user_id = 0 , prod_detail = '' , IsPrefilled = 0 Where state = 1 and rack_id = "& dbRack_No & "")
+	On Error Resume Next
+		Call Mysql_Non_Query("Update codabix_trigger Set db_360 = 0 , db_361 = 0 , db_362 = 0  , state = 0 , cylinder_id = 0 , oms_batch = '' , shift_batch = '' ,user_id = 0 , prod_detail = '' , IsPrefilled = 0 Where state = 1 and rack_id = "& dbRack_No & "")
 			Call Mysql_Non_Query("Update filling_rack Set occupied = 0 , cylinder_type = '' , user_id = ''  Where rack_id="& dbRack_No & "")
 			Call GF_LogToFile_("Execute", " Deactivate All CheckPoint : " & dbRack_No , "Individual")
 			Call ClearPLC_Ind_EnerTech()
+	If Err.Number <> 0 Then
+		    Call GF_LogError("Error", "Filling.bmo - Function Deactivate_All is not Workings [" & Err.Description & "]","Individual")
+		    Err.Clear
+	End If
 	End Function
 	
 'Description : Clear all Internal Tag Values
 '---------------------------------------------------------------------------------------------------
 	Public Function ClearIndividualInternalTag()
+	On Error Resume Next
 		capture_start_timestamp = ""
 		capture_end_timestamp = ""
 		Individual_QI_State = ""
-		
+	If Err.Number <> 0 Then
+		    Call GF_LogError("Error", "Filling.bmo - Function ClearIndividualInternalTag is not Workings [" & Err.Description & "]","Individual")
+		    Err.Clear
+	End If	
 	End Function
 	
 'Description : Function Deactivate Check Point 3 [Action Script Phase 3]
 '---------------------------------------------------------------------------------------------------- 	
 	Public Function Deactivate_Cryostar_All()
-			Dim filling_end_time_fromOS : filling_end_time_fromOS = DisplayDate(Now)
+	On Error Resume Next
+		    Dim filling_end_time_fromOS : filling_end_time_fromOS = DisplayDate(Now)
 			
 			Call Mysql_Non_Query("Insert INTO sub_fill_individual ( user_id , user_entry_start_date , user_entry_end_date , oms_batch ,shift_batch, cylinder_id , pallet_table_id ," & _
 				" weight1 ,weight2 ,weight3, weight1_starttime , weight1_endtime ,weight2_starttime, weight2_endtime, weight3_starttime , weight3_endtime , result1 , result2 , result3 )"  & _
@@ -586,12 +671,16 @@ Dim Tags
 			Call Mysql_Non_Query("Update codabix_trigger Set db_330 = 0 , db_331 = 0  , state = 0 , cylinder_id = 0 , oms_batch = '' ,shift_batch = '', user_id = 0 , prod_detail = '' , IsPrefilled = 0 Where state = 1 and rack_id = "& dbRack_No & "")
 			Call Mysql_Non_Query("Update filling_rack Set occupied = 0 , cylinder_type = '' , user_id = ''  Where rack_id="& dbRack_No & "")
 			Call ClearPLC_Ind_Cryostar()
-			
+	If Err.Number <> 0 Then
+		    Call GF_LogError("Error", "Filling.bmo - Function Deactivate_Cryostar_All is not Workings [" & Err.Description & "]","Individual")
+		    Err.Clear
+	End If			
 	End Function
 
 'Description : Function StoretoDB [Action Script Phase 3]
 '---------------------------------------------------------------------------------------------------- 	
 	Public Function StoreToDB()
+	On Error Resume Next
 		'1 = i , 2 = p , 3 = l [analysis_mode]
 		'0 = No/prefilled , 1 = QI/FULL   [analysis_required] cylinder QI/FULL
 		'1 = individual_sub , 2= fill_loos_sub , 3 = fill_mcp_sub , 4 = fill_cdp_sub  [fill_mode] cylinder QI/FULL
@@ -676,30 +765,51 @@ Dim Tags
 				Call Mysql_Non_Query("Update pallet_table Set filling_finish = 1 , analysis_mode = 1 ,analysis_required = 1 ,shift_batch = '" & shift_batch & "', fill_mode = 1 Where cyl_id =(SELECT distinct cylinder_id from codabix_trigger WHERE rack_id = "& dbRack_No & ") and oms_batch = (SELECT distinct oms_batch from codabix_trigger WHERE rack_id = "& dbRack_No & ") ")
 				
 		End If
-
+		Call Mysql_Non_Query("UPDATE analysis_filling_history SET status = 2 WHERE oms_batch = (SELECT distinct oms_batch from codabix_trigger WHERE rack_id = "& dbRack_No & ") and " & _ 
+							" rack_name = '"& rack_name &"' ")
+		
+	If Err.Number <> 0 Then
+		    Call GF_LogError("Error", "Filling.bmo - Function StoreToDB is not Workings [" & Err.Description & "]","Individual")
+		    Err.Clear
+	End If
 	End Function
 
 'Description : Clear PLC Tags
 '----------------------------------------------------------------------------------------------------	
 	Public Function ClearPLC_Ind_EnerTech()
+	On Error Resume Next
 		order_status   = 0
 		recipe_code    = ""
 		cyl_code       = ""
 		quantity       = 0
 		cyl_fill_state = 0
+	If Err.Number <> 0 Then
+		    Call GF_LogError("Error", "Filling.bmo - Function ClearPLC_Ind_EnerTech is not Workings [" & Err.Description & "]","Individual")
+		    Err.Clear
+	End If
 	End Function
 	
 	Public Function ClearPLC_Ind_Cryostar()
+	On Error Resume Next
 		order_status  = 0
 		recipe_code   = ""
 		cyl_code      = ""
 		quantity      = 0
+	If Err.Number <> 0 Then
+		    Call GF_LogError("Error", "Filling.bmo - Function ClearPLC_Ind_Cryostar is not Workings [" & Err.Description & "]","Individual")
+		    Err.Clear
+	End If
 	End Function
 	
 'Description : Others Method
 '---------------------------------------------------------------------------------------------------- 
 	Public Function Test()
+	On Error Resume Next
 		Test = rack_no
+	If Err.Number <> 0 Then
+		    Call GF_LogError("Error", "Filling.bmo - Function Test is not Workings [" & Err.Description & "]","Individual")
+		    Err.Clear
+	End If
 	End Function
 
 	

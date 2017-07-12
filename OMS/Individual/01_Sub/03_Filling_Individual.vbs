@@ -6,7 +6,7 @@
 '******************************************************************************************************
 
 Sub FillingIndividual_Q
-
+On Error Resume Next
 'Description : Declared MySQL Variables and Objects
 '-----------------------------------------------------------------------------------------
 Dim objConn,objRS
@@ -276,4 +276,8 @@ Dim point_3 : point_3 = 3
 '---------------------------------------------------------------------------	
 	Call Mysql_Close_Conn(objRS,objConn)
 	
+	If Err.Number <> 0 Then
+		    Call GF_LogError("Error", "03_Filling_Individual.bmo - Sub FillingIndividual_Q is not Workings [" & Err.Description & "]","Individual")
+		    Err.Clear
+	End If
 End Sub

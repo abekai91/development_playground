@@ -5,6 +5,7 @@
 ' Created Date : 18 Feburary 2017
 '******************************************************************************************************
 Function Check_Point_DB360(objRS,objConn,totalRack,RackNo)
+On Error Resume Next
 	totalRack = 0
 	RackNo = 0
 	Set objRS = objConn.execute("Select count(distinct rack_id) from codabix_trigger where" & _
@@ -27,6 +28,10 @@ Function Check_Point_DB360(objRS,objConn,totalRack,RackNo)
 		objRS.MoveNext
 	Loop
 
+	If Err.Number <> 0 Then
+		    Call GF_LogError("Error", "CheckPoint.bmo - Function Check_Point_DB360 is not Workings [" & Err.Description & "]","Individual")
+		    Err.Clear
+	End If
 End Function
 
 '******************************************************************************************************
@@ -36,6 +41,7 @@ End Function
 ' Created Date : 18 Feburary 2017
 '******************************************************************************************************
 Function Check_Point_DB361(objRS,objConn,totalRack,RackNo)
+On Error Resume Next
 	totalRack = 0
 	RackNo = 0
 	Set objRS = objConn.execute("Select count(distinct rack_id) from codabix_trigger where" & _
@@ -58,7 +64,10 @@ Function Check_Point_DB361(objRS,objConn,totalRack,RackNo)
 		objRS.MoveNext
 	Loop
 
-
+	If Err.Number <> 0 Then
+		    Call GF_LogError("Error", "CheckPoint.bmo - Function Check_Point_DB361 is not Workings [" & Err.Description & "]","Individual")
+		    Err.Clear
+	End If
 End Function
 
 
@@ -70,6 +79,7 @@ End Function
 '******************************************************************************************************
 
 Function Check_Point_DB362(objRS,objConn,totalRack,RackNo)
+On Error Resume Next
 	totalRack = 0
 	RackNo = 0
 	Set objRS = objConn.execute("Select count(distinct rack_id) from codabix_trigger where" & _
@@ -91,7 +101,11 @@ Function Check_Point_DB362(objRS,objConn,totalRack,RackNo)
 		RackNo = RackNo & "," & objRS(2).value	
 		objRS.MoveNext
 	Loop
-
+	
+	If Err.Number <> 0 Then
+		    Call GF_LogError("Error", "CheckPoint.bmo - Function Check_Point_DB362 is not Workings [" & Err.Description & "]","Individual")
+		    Err.Clear
+	End If
 
 End Function
 
@@ -103,6 +117,7 @@ End Function
 ' Created Date : 27 April 2017
 '******************************************************************************************************
 Function Check_Point_DB330(objRS,objConn,totalRack,RackNo)
+On Error Resume Next
 	totalRack = 0
 	RackNo = 0
 	Set objRS = objConn.execute("Select count(distinct rack_id) from codabix_trigger where" & _
@@ -124,7 +139,11 @@ Function Check_Point_DB330(objRS,objConn,totalRack,RackNo)
 		RackNo = RackNo & "," & objRS(2).value	
 		objRS.MoveNext
 	Loop
-
+	
+	If Err.Number <> 0 Then
+		    Call GF_LogError("Error", "CheckPoint.bmo - Function Check_Point_DB330 is not Workings [" & Err.Description & "]","Individual")
+		    Err.Clear
+	End If
 End Function
 
 '******************************************************************************************************
@@ -134,6 +153,7 @@ End Function
 ' Created Date : 27 April 2017
 '******************************************************************************************************
 Function Check_Point_DB331(objRS,objConn,totalRack,RackNo)
+On Error Resume Next
 	totalRack = 0
 	RackNo = 0
 	Set objRS = objConn.execute("Select count(distinct rack_id) from codabix_trigger where" & _
@@ -156,5 +176,8 @@ Function Check_Point_DB331(objRS,objConn,totalRack,RackNo)
 		objRS.MoveNext
 	Loop
 
-
+	If Err.Number <> 0 Then
+		    Call GF_LogError("Error", "CheckPoint.bmo - Function Check_Point_DB331 is not Workings [" & Err.Description & "]","Individual")
+		    Err.Clear
+	End If
 End Function

@@ -5,7 +5,7 @@
 ' Created Date : 18 Feburary 2017
 '******************************************************************************************************
 Function Interface_Individual(par1,par2)
-	
+On Error Resume Next	
 	Select Case CINT(par2)
 		   Case 1
 			 	Call filling_individual_exec_enertech_1(par1)
@@ -20,4 +20,8 @@ Function Interface_Individual(par1,par2)
 		   Case Else
 			 	HMIRuntime.Trace(Now & " - Parameter Interface  Individual Reach Limit ("& par2 & ")")
 	End Select
+	If Err.Number <> 0 Then
+		    Call GF_LogError("Error", "Interface.bmo - Function Interface_Individual is not Workings [" & Err.Description & "]","Individual")
+		    Err.Clear
+	End If
 End Function
