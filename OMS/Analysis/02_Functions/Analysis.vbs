@@ -145,7 +145,9 @@ Class Analysis
 		
 		Public Function deactivate_analysis_4()
 			On Error Resume Next
+			Call Mysql_Non_Query("Update analysis_qc_history SET status = 2 Where rack_name = '"& rack_name &"' and  oms_batch = '"& batch_id &"' ")
 			Call Mysql_Non_Query("Update analysis_rack Set occupied = 0 , cp1 = 0 , cp2 = 0 , cp3 = 0 , cp4 = 0 , cyl_id = 0 , batch_id = '' , prod_id = '' ,cyl_to_analyse = 0 ,user_id = 0 Where rack_id = "& rack_no & "")
+			
 			Call GF_LogToFile_("Execute", "Deactivate CP 4 : " & rack_no ,"Analysis")
 		
 			If Err.Number <> 0 Then

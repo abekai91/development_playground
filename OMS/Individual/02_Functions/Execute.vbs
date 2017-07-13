@@ -50,11 +50,15 @@ On Error Resume Next
 		   		End If
 			 	Call GF_LogToFile_("Exec", Info_Msg ,"Individual")
 		   Case 11
-		   		If par1.capture_end_timestamp = "" Then
-		   			par1.capture_end_timestamp = TimeNow()
-		   			par1.Deactivate_CheckingPoint_2
-		   			Call GF_LogToFile_("Exec", "End Time : " & TimeNow(),"Individual") 
-		   		End If
+				'remove checking internal tag time is empty
+		   		'If par1.capture_end_timestamp = "" Then
+		   		'	par1.capture_end_timestamp = TimeNow()
+		   		'	par1.Deactivate_CheckingPoint_2
+		   		'	Call GF_LogToFile_("Exec", "End Time : " & TimeNow(),"Individual") 
+		   		'End If
+				par1.capture_end_timestamp = TimeNow()
+		   		par1.Deactivate_CheckingPoint_2
+		   		Call GF_LogToFile_("Exec", "End Time : " & TimeNow(),"Individual") 
 		   		Call GF_LogToFile_("Exec", Info_Msg ,"Individual")
 		   Case 12
 		   		par1.Reset_FillIndividual_EnerTech
@@ -157,13 +161,21 @@ On Error Resume Next
 		   			Call GF_LogToFile_("Execute", Info_Msg, "Individual")
 		   		End If
 		   Case 11
-		   		If par1.capture_end_timestamp = "" Then
-		   			par1.capture_end_timestamp = TimeNow()
+				'remove checking internal tage is empty
+		   		'If par1.capture_end_timestamp = "" Then
+		   		'	par1.capture_end_timestamp = TimeNow()
+		   		'	par1.Deactivate_Cryostar_CheckingPoint_2
+		   		'	par1.ClearIndividualInternalTag
+		   		'	par1.ClearPLC_Ind_Cryostar()
+		   		'	Call GF_LogToFile_("RESET", Info_Msg, "Individual")
+		   		'End If
+				
+					par1.capture_end_timestamp = TimeNow()
 		   			par1.Deactivate_Cryostar_CheckingPoint_2
 		   			par1.ClearIndividualInternalTag
 		   			par1.ClearPLC_Ind_Cryostar()
 		   			Call GF_LogToFile_("RESET", Info_Msg, "Individual")
-		   		End If
+				
 		   Case 12
 		   		par1.Reset_FillIndividual_Cryostar
 		   		par1.ClearIndividualInternalTag
