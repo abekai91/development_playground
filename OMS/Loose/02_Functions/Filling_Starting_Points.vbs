@@ -5,6 +5,7 @@
 ' Dated Created : 16 Febuary 2017
 '******************************************************************************************************
 Function Check_Point_1(objRS,objConn,totalRack,RackNo)
+On Error Resume Next	
 Dim t_point,t_count,Order_Status
 	totalRack = 0
 	RackNo 	  = 0
@@ -31,6 +32,10 @@ Dim t_point,t_count,Order_Status
 		RackNo = RackNo & "," & objRS(2).value
 		objRS.MoveNext	
 	Loop	
+If Err.Number <> 0 Then
+	Call GF_LogError("Error", "Filling_Starting_Points.bmo - Function Check_Point_1 is not Workings [" & Err.Description & "]","Loose")
+	Err.Clear
+End If
 End Function
 
 
@@ -41,6 +46,7 @@ End Function
 ' Dated Created : 16 Febuary 2017
 '******************************************************************************************************
 Function Check_Point_2(objRS,objConn,totalRack,RackNo)
+On Error Resume Next
 Dim t_point,t_count,Order_Status
 	totalRack = 0 
 	RackNo = 0
@@ -64,5 +70,8 @@ Dim t_point,t_count,Order_Status
 		RackNo = RackNo & "," & objRS(2).value
 		objRS.MoveNext	
 	Loop
-	
+If Err.Number <> 0 Then
+	Call GF_LogError("Error", "Filling_Starting_Points.bmo - Function Check_Point_2 is not Workings [" & Err.Description & "]","Loose")
+	Err.Clear
+End If	
 End Function

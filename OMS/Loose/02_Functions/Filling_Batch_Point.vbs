@@ -1,6 +1,6 @@
 'Filling Loose CheckPoint 1 : EnerTech ************************************************************
 Function Status_Batch_Point1(par1)
-	
+On Error Resume Next	
 	 Dim Check_Status , Info_Msg , Filling_Types
 	 
 	 Check_Status  = par1.getStatus_DB302
@@ -26,12 +26,15 @@ Function Status_Batch_Point1(par1)
 			 	HMIRuntime.Trace(Now & Info_Msg & vbCrlf)
 			 	Call GF_LogToFile_("Exec", Info_Msg ,"Loose")
 	End Select
-	
+If Err.Number <> 0 Then
+		    Call GF_LogError("Error", "Filling_Batch_Point.bmo - Function Status_Batch_Point1 is not Workings [" & Err.Description & "]","Loose")
+		    Err.Clear
+End If	
 End Function
 
 'Filling Loose CheckPoint 2 : EnerTech ************************************************************
 Function Status_Batch_Point2(par1)
-	
+On Error Resume Next	
 	Dim Check_Status, Final_Status , Info_Msg , Filling_Types
 	
 	Check_Status  = par1.getStatus_DB302
@@ -43,19 +46,24 @@ Function Status_Batch_Point2(par1)
 			 	HMIRuntime.Trace(Now & Info_Msg & vbCrlf )
 			 	Call GF_LogToFile_("Execute", Info_Msg ,"Loose")
 		   Case 9
-		   		If par1.time_start = "" Then
-		   			par1.setS_Time
-			 		par1.setS_Date
-		   		End If
-		   		
+		   		'If par1.time_start = "" Then
+		   		'	par1.setS_Time
+			 	'	par1.setS_Date
+		   		'End If
+		   		par1.setS_Time
+			 	par1.setS_Date
 			 	Call GF_LogToFile_("Execute", Info_Msg ,"Loose")
 		   Case 11
-		   		If par1.time_end = "" Then
-			   		par1.setE_Time
-			   		par1.setE_Date
-			   		par1.set_DeactFilling_Batch	
-		   		End If
+				'Comment : because we capture end time during insert into database
+		   		'If par1.time_end = "" Then
+			   	'	par1.setE_Time
+			   	'	par1.setE_Date
+			   	'	par1.set_DeactFilling_Batch	
+		   		'End If
 		   		
+				par1.setE_Time
+			   	par1.setE_Date
+			   	par1.set_DeactFilling_Batch	
 		   		Call GF_LogToFile_("Execute", Info_Msg ,"Loose")
 		   		
 		   Case 12
@@ -67,5 +75,8 @@ Function Status_Batch_Point2(par1)
 		   		HMIRuntime.Trace(Now & Info_Msg & vbCrlf)
 			 	Call GF_LogToFile_("Execute", Info_Msg ,"Loose")
 	End Select
-	
+If Err.Number <> 0 Then
+		    Call GF_LogError("Error", "Filling_Batch_Point.bmo - Function Status_Batch_Point2 is not Workings [" & Err.Description & "]","Loose")
+		    Err.Clear
+End If		
 End Function
